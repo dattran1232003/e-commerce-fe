@@ -13,9 +13,6 @@ const resolvedAliases = Object.fromEntries(
 
 module.exports = {
   webpack: {
-    alias: {
-      ...resolvedAliases,
-      '@': path.resolve(__dirname, 'src'),
-    },
+    alias: resolvedAliases,
   },
 }
