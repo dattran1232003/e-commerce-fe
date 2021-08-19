@@ -3,9 +3,13 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 import routes from './routes'
 
-function AppRouter(): JSX.Element {
+export type Props = {
+  children?: JSX.Element
+}
+function AppRouter({ children }: Props): JSX.Element {
   return (
     <Router>
+      {children}
       <Switch>
         <Suspense fallback="loading...">
           {routes.map(({ component, ...rest }) => (

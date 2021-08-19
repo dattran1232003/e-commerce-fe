@@ -1,15 +1,19 @@
-import Navbar from './components/Navbar'
+import Navbar from './components/Navbar/Navbar'
 import AppRouter from './pages/AppRouter'
+import { useAxiosInstance } from '@/adapters/axios'
 
 function App(): JSX.Element {
-  return (
-    <div className="App">
-      <header>
-        <Navbar />
-      </header>
+  const axios = useAxiosInstance()
 
-      <AppRouter />
-    </div>
+  axios.get('/product/v1/products', { data: { offset: 0, limit: 10 } })
+  return (
+    <AppRouter>
+      <div className="App">
+        <header>
+          <Navbar />
+        </header>
+      </div>
+    </AppRouter>
   )
 }
 
