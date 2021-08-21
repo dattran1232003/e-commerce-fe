@@ -1,11 +1,19 @@
 import Navbar from './components/Navbar/Navbar'
 import AppRouter from './pages/AppRouter'
 import { useAxiosInstance } from '@/adapters/axios'
+import { useEffect } from 'react'
 
 function App(): JSX.Element {
   const axios = useAxiosInstance()
 
-  axios.get('/product/v1/products', { data: { offset: 0, limit: 10 } })
+  useEffect(() => {
+    axios
+      .get('/v1/products', {
+        data: { offset: 0, limit: 10 },
+      })
+      .catch(console.error)
+  }, [])
+
   return (
     <AppRouter>
       <div className="App">

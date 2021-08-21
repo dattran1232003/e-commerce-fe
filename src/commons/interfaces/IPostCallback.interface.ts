@@ -1,4 +1,6 @@
-export interface IPostCallback<ResponseT, ErrorT> {
-  onError?: (error: ErrorT) => void
+import { ErrorResponse } from '@/commons/dtos/ErrorResponse.dto'
+
+export interface IPostCallback<ResponseT> {
+  onError?: (error: ErrorResponse) => void
   onSuccess?: (responseData: ResponseT) => void
 }

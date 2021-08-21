@@ -1,53 +1,44 @@
 import { useState } from 'react'
-import { useAxiosInstance } from '@/adapters/axios'
 import { SignInInputs } from '../AuthForm/AuthForm'
 
-import { EStatus } from '@/commons/enums'
-import statusType from '@/commons/utilities/status-type.util'
+import { EUserType } from '@/commons/enums'
+import { useAxiosInstance } from '@/adapters/axios'
+import { ErrorResponse } from '@/commons/dtos/ErrorResponse.dto'
 import useAuthData, { AuthData } from '@/commons/hooks/useAuthData'
-import { IPostCallback } from '@/commons/interfaces/IPostCallback.interface'
+
+type Res = AuthData | ErrorResponse
 
 interface ISignInOperation {
-  signIn: (
-    user: SignInInputs,
-    callbacks?: IPostCallback<AuthData, unknown>
-  ) => Promise<AuthData | null>
+  signIn: (user: SignInInputs) => Promise<Res>
   loading: boolean
 }
-
-function useSignIn(): ISignInOperation {
+function useSignIn(userType: EUserType): ISignInOperation {
   const [loading, setLoading] = useState<boolean>(false)
-  const axios = useAxiosInstance()
+
   const { setAuthData } = useAuthData()
+  const axios = useAxiosInstance()
 
-  async function signIn(
-    user: SignInInputs,
-    cbs: IPostCallback<AuthData, unknown> = {}
-  ): Promise<AuthData | null> {
+  async function signIn(user: SignInInputs): Promise<Res> {
+    const userTypeEndPoint =
+      userType === EUserType.BUYER ? 'buyers' : 'merchants'
+
     setLoading(true)
-
-    const { onSuccess, onError } = cbs
-
-    const { status, data: authData } = await axios
-      .post<AuthData>('/auth/buyers/sign-in', { data: user })
-      .catch((error) => {
-        setLoading(false)
-        onError && onError(error)
-        return error
-      })
-
-    const responseStatus = statusType(status)
-    if (responseStatus !== EStatus.CREATED) {
+    try {
+      const response = await axios.post(
+        `/auth/${userTypeEndPoint}/sign-in`,
+        user
+      )
       setLoading(false)
-      onError && onError(authData)
-      return null
+
+      // set for tokens
+      setAuthData(response.data)
+      return response.data
+    } catch (error) {
+      setLoading(false)
+
+      const data = error?.response?.data
+      return new ErrorResponse(data)
     }
-
-    setLoading(false)
-    setAuthData(authData)
-    onSuccess && onSuccess(authData)
-
-    return authData
   }
 
   return { signIn, loading }

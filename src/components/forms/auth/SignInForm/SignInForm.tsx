@@ -3,13 +3,14 @@ import { SubmitHandler } from 'react-hook-form'
 // import { useHistory } from 'react-router-dom'
 
 // customs
-import { EAuthForm } from '@/commons/enums'
+import { EAuthForm, EUserType } from '@/commons/enums'
 import useSignIn from '../hooks/useSignIn'
-import { AuthData } from '@/commons/hooks/useAuthData'
+
 import AuthForm, { SignInInputs } from '../AuthForm/AuthForm'
 
 // UI
 import Link from '@material-ui/core/Link'
+import { LinearProgress } from '@material-ui/core'
 // # import region
 
 export type Props = {
@@ -17,23 +18,18 @@ export type Props = {
 }
 export default function SignInForm({ changeForm }: Props): JSX.Element {
   // const history = useHistory()
-  const { signIn, loading } = useSignIn()
+  const { signIn, loading } = useSignIn(EUserType.BUYER)
 
-  const onSubmit: SubmitHandler<SignInInputs> = (data) => {
-    signIn(data, { onSuccess, onError })
+  const onSubmit: SubmitHandler<SignInInputs> = async (data) => {
+    const res = await signIn(data)
 
-    function onSuccess(authData: AuthData): void {
-      console.log('login success:', authData)
-    }
-
-    function onError(error: any) {
-      console.log(error)
-    }
+    console.log(res)
   }
 
-  if (loading) return <div>Loading...</div>
   return (
     <div>
+      {loading && <LinearProgress />}
+
       <h2>Sign In</h2>
 
       <AuthForm onSubmit={onSubmit} formType={EAuthForm.SIGNIN} />
