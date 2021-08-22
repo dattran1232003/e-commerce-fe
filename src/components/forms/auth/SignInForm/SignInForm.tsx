@@ -1,29 +1,32 @@
-// import region
+import { useState } from 'react'
 import { SubmitHandler } from 'react-hook-form'
-// import { useHistory } from 'react-router-dom'
 
 // customs
-import { EAuthForm, EUserType } from '@/commons/enums'
 import useSignIn from '../hooks/useSignIn'
-
+import { isErrorResponse } from '@/commons/utilities'
+import { EAuthForm, EUserType } from '@/commons/enums'
 import AuthForm, { SignInInputs } from '../AuthForm/AuthForm'
 
 // UI
 import Link from '@material-ui/core/Link'
-import { LinearProgress } from '@material-ui/core'
-// # import region
+import LinearProgress from '@material-ui/core/LinearProgress'
+import ChooseUserType from '../ChooseUserType/ChooseUserType'
 
 export type Props = {
   changeForm: React.Dispatch<React.SetStateAction<EAuthForm | null>>
 }
 export default function SignInForm({ changeForm }: Props): JSX.Element {
-  // const history = useHistory()
-  const { signIn, loading } = useSignIn(EUserType.BUYER)
+  const [errors, setErrors] = useState<string[]>([])
+  const [userType, setUserType] = useState<EUserType | null>(null)
+
+  const { signInAs, loading } = useSignIn()
 
   const onSubmit: SubmitHandler<SignInInputs> = async (data) => {
-    const res = await signIn(data)
+    if (!userType) return
 
-    console.log(res)
+    const res = await signInAs(userType, data)
+
+    isErrorResponse(res) && setErrors(res.message)
   }
 
   return (
@@ -32,7 +35,13 @@ export default function SignInForm({ changeForm }: Props): JSX.Element {
 
       <h2>Sign In</h2>
 
-      <AuthForm onSubmit={onSubmit} formType={EAuthForm.SIGNIN} />
+      <ChooseUserType onChange={setUserType} currentUserType={userType} />
+
+      <AuthForm
+        httpError={errors}
+        onSubmit={onSubmit}
+        formType={EAuthForm.SIGNIN}
+      />
 
       <Link
         href="#"

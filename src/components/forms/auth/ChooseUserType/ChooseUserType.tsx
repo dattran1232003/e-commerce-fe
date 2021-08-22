@@ -1,14 +1,14 @@
 import { EUserType } from '@/commons/enums'
 import Button from '@material-ui/core/Button'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
-// import { useStyles } from './RegisterAs.style'
+// import { useStyles } from './ChooseUserType.style'
 
 export type Props = {
   currentUserType: EUserType | null
   onChange: (userType: EUserType) => void
 }
 
-function RegisterAs({ currentUserType, onChange }: Props): JSX.Element {
+function ChooseUserType({ currentUserType, onChange }: Props): JSX.Element {
   // const classes = useStyles()
 
   const btnVariant = (definedType: EUserType) => {
@@ -39,4 +39,4 @@ function RegisterAs({ currentUserType, onChange }: Props): JSX.Element {
   )
 }
 
-export default RegisterAs
+export default ChooseUserType

@@ -7,7 +7,7 @@ export class ErrorResponse implements IErrorResponse {
 
   constructor(errorResponse: ErrorResponse & { statusCode?: number }) {
     if (!errorResponse) return
-    console.log(errorResponse)
+    // console.log(errorResponse)
 
     const { status, statusCode, message, error } = errorResponse
 

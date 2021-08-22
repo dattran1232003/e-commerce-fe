@@ -3,8 +3,8 @@ import { SubmitHandler } from 'react-hook-form'
 
 // custom
 import { useStyles } from './SignUpForm.style'
-import RegisterAs from '../RegisterAs/RegisterAs'
 import { EAuthForm, EUserType } from '@/commons/enums'
+import ChooseUserType from '../ChooseUserType/ChooseUserType'
 import AuthForm, { SignUpInputs } from '../AuthForm/AuthForm'
 
 // UIs
@@ -53,12 +53,13 @@ export default function SignUp({ changeForm }: Props): JSX.Element {
 
   function getStepContent(stepIndex: number) {
     const stepContents = [
-      <RegisterAs
+      /* step 1 */
+      <ChooseUserType
         key="0"
         currentUserType={userType}
         onChange={handleChangeUserType}
       />,
-
+      /* step 2 */
       <div key="1">
         <h2>Sign Up</h2>
         <AuthForm formType={EAuthForm.SIGNUP} onSubmit={onSubmit} />

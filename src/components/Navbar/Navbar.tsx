@@ -24,6 +24,7 @@ import { SignInForm, SignUpForm } from '@/components/forms/auth'
 
 // hooks
 import { useStyles } from './Navbar.style'
+import useAuthData from '@/commons/hooks/useAuthData'
 
 //#imports region
 
@@ -34,18 +35,14 @@ export type UserMenuItem = {
 
 export default function MenuAppBar(): JSX.Element {
   const classes = useStyles()
+  const { isAuth } = useAuthData()
 
-  const [auth, setAuth] = React.useState(false)
   const [formModalOpen, setFormModalOpen] = React.useState<EAuthForm | null>(
     null
   )
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAuth(event.target.checked)
-  }
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
@@ -65,6 +62,7 @@ export default function MenuAppBar(): JSX.Element {
     setFormModalOpen(EAuthForm.SIGNUP)
   }
 
+  const auth = isAuth() // check auth every time component mount
   const userMenuItems = React.useMemo<UserMenuItem[]>(
     () =>
       auth
@@ -82,18 +80,6 @@ export default function MenuAppBar(): JSX.Element {
 
   return (
     <div className={classes.root}>
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={auth}
-              onChange={handleChange}
-              aria-label="login switch"
-            />
-          }
-          label={auth ? 'Logout' : 'Login'}
-        />
-      </FormGroup>
       <AppBar position="static">
         <Toolbar>
           <IconButton

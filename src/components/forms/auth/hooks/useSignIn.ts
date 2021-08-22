@@ -9,16 +9,19 @@ import useAuthData, { AuthData } from '@/commons/hooks/useAuthData'
 type Res = AuthData | ErrorResponse
 
 interface ISignInOperation {
-  signIn: (user: SignInInputs) => Promise<Res>
+  signInAs: (userType: EUserType, user: SignInInputs) => Promise<Res>
   loading: boolean
 }
-function useSignIn(userType: EUserType): ISignInOperation {
+function useSignIn(): ISignInOperation {
   const [loading, setLoading] = useState<boolean>(false)
 
-  const { setAuthData } = useAuthData()
   const axios = useAxiosInstance()
+  const { setAuthData } = useAuthData()
 
-  async function signIn(user: SignInInputs): Promise<Res> {
+  async function signInAs(
+    userType: EUserType,
+    user: SignInInputs
+  ): Promise<Res> {
     const userTypeEndPoint =
       userType === EUserType.BUYER ? 'buyers' : 'merchants'
 
@@ -41,7 +44,7 @@ function useSignIn(userType: EUserType): ISignInOperation {
     }
   }
 
-  return { signIn, loading }
+  return { signInAs, loading }
 }
 
 export default useSignIn

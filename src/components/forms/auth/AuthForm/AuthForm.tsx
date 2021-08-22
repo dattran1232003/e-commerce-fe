@@ -7,6 +7,7 @@ import { useStyles } from './AuthForm.style'
 import { signInSchema } from '../schema/sign-in.schema'
 import { signUpSchema } from '../schema/sign-up.schema'
 
+import Alert from '@material-ui/lab/Alert'
 import Button from '@material-ui/core/Button'
 import Checkbox from '@material-ui/core/Checkbox'
 import TextField from '@material-ui/core/TextField'
@@ -15,6 +16,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import IconButton from '@material-ui/core/IconButton'
 import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
+import ChooseUserType from '../ChooseUserType/ChooseUserType'
 
 export type SignInInputs = {
   username: string
@@ -27,12 +29,14 @@ export type SignUpInputs = {
 }
 
 export type Props = {
+  httpError?: string[]
   formType: EAuthForm
   onSubmit: SubmitHandler<SignInInputs> | SubmitHandler<SignUpInputs>
 }
-function AuthForm({ formType, onSubmit }: Props): JSX.Element {
+function AuthForm({ formType, onSubmit, httpError }: Props): JSX.Element {
   const classes = useStyles()
   const [showPassword, setShowPassword] = useState<boolean>(false)
+
   const {
     register,
     handleSubmit,
@@ -108,6 +112,14 @@ function AuthForm({ formType, onSubmit }: Props): JSX.Element {
           {...register('confirmPassword')}
         />
       )}
+
+      {httpError &&
+        httpError.length !== 0 &&
+        httpError.map((error, i) => (
+          <Alert severity="error" key={i}>
+            {error}
+          </Alert>
+        ))}
 
       <FormControlLabel
         control={<Checkbox value="remember" color="primary" />}
