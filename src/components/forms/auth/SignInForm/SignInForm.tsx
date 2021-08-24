@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useHistory } from 'react-router'
 import { SubmitHandler } from 'react-hook-form'
 
 // customs
@@ -14,8 +15,10 @@ import ChooseUserType from '../ChooseUserType/ChooseUserType'
 
 export type Props = {
   changeForm: React.Dispatch<React.SetStateAction<EAuthForm | null>>
+  handleCloseFormModal: () => void
 }
 export default function SignInForm({ changeForm }: Props): JSX.Element {
+  const history = useHistory()
   const [errors, setErrors] = useState<string[]>([])
   const [userType, setUserType] = useState<EUserType | null>(null)
 
@@ -26,7 +29,12 @@ export default function SignInForm({ changeForm }: Props): JSX.Element {
 
     const res = await signInAs(userType, data)
 
-    isErrorResponse(res) && setErrors(res.message)
+    if (isErrorResponse(res)) {
+      setErrors(res.message)
+      return
+    }
+
+    history.go(0)
   }
 
   return (

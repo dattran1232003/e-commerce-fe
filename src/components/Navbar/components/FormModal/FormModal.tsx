@@ -1,5 +1,5 @@
 // import region
-import { ReactElement } from 'react'
+import { ReactNode } from 'react'
 
 // types
 import { EAuthForm } from '@/commons/enums/auth-form.enum'
@@ -15,7 +15,7 @@ import { useStyles } from './FormModal.style'
 //# import region
 
 export type Props = {
-  children?: ReactElement | undefined
+  children?: ReactNode
   formModalOpen: EAuthForm | null
   handleCloseFormModal: () => void
 }

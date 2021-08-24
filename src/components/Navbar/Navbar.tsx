@@ -9,14 +9,11 @@ import { EAuthForm } from '@/commons/enums/auth-form.enum'
 import MenuIcon from '@material-ui/icons/Menu'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import Menu from '@material-ui/core/Menu'
-import Switch from '@material-ui/core/Switch'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import MenuItem from '@material-ui/core/MenuItem'
-import FormGroup from '@material-ui/core/FormGroup'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 
 // Components
 import FormModal from './components/FormModal/FormModal'
@@ -35,7 +32,7 @@ export type UserMenuItem = {
 
 export default function MenuAppBar(): JSX.Element {
   const classes = useStyles()
-  const { isAuth } = useAuthData()
+  const { isAuth, delAuthData } = useAuthData()
 
   const [formModalOpen, setFormModalOpen] = React.useState<EAuthForm | null>(
     null
@@ -62,6 +59,10 @@ export default function MenuAppBar(): JSX.Element {
     setFormModalOpen(EAuthForm.SIGNUP)
   }
 
+  const onLogout = () => {
+    delAuthData()
+  }
+
   const auth = isAuth() // check auth every time component mount
   const userMenuItems = React.useMemo<UserMenuItem[]>(
     () =>
@@ -69,7 +70,7 @@ export default function MenuAppBar(): JSX.Element {
         ? [
             { label: 'Profile', onClick: handleMenuClose },
             { label: 'My account', onClick: handleMenuClose },
-            { label: 'Logout', onClick: handleMenuClose },
+            { label: 'Logout', onClick: onLogout },
           ]
         : [
             { label: 'Sign In', onClick: onSignInClick },
@@ -134,7 +135,11 @@ export default function MenuAppBar(): JSX.Element {
         formModalOpen={formModalOpen}
         handleCloseFormModal={() => setFormModalOpen(null)}
       >
-        <AuthForm formType={formModalOpen} changeForm={setFormModalOpen} />
+        <AuthForm
+          handleCloseFormModal={() => setFormModalOpen(null)}
+          formType={formModalOpen}
+          changeForm={setFormModalOpen}
+        />
       </FormModal>
     </div>
   )
@@ -143,6 +148,7 @@ export default function MenuAppBar(): JSX.Element {
 type AFProps = {
   formType: EAuthForm | null
   changeForm: React.Dispatch<React.SetStateAction<EAuthForm | null>>
+  handleCloseFormModal: () => void
 }
 function AuthForm({ formType, ...props }: AFProps): JSX.Element {
   // switch case like

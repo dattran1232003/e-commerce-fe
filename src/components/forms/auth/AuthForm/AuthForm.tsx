@@ -16,7 +16,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import IconButton from '@material-ui/core/IconButton'
 import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
-import ChooseUserType from '../ChooseUserType/ChooseUserType'
 
 export type SignInInputs = {
   username: string
