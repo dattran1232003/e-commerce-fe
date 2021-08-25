@@ -1,4 +1,6 @@
 import { useReducer } from 'react'
+import { isExpired } from '../utilities/jwt.util'
+// import { pipe } from 'ramda'
 
 type Nullable<T> = T | null
 
@@ -95,9 +97,12 @@ function useAuthData(): IAuthDataOperation {
   }
 
   function isAuth(): boolean {
-    return (
+    const isHasTokens =
       Boolean(authDataState.accessToken) && Boolean(authDataState.refreshToken)
-    )
+
+    const isAccessTokenExpired = isExpired(authDataState.accessToken)
+
+    return isHasTokens && !isAccessTokenExpired
   }
 
   return { getAuthData, setAuthData, delAuthData, isAuth }
